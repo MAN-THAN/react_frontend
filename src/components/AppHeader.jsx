@@ -68,7 +68,7 @@ const AppHeader = () => {
             sx={{
               cursor: "pointer",
             }}
-            onClick={() => navigate("/dashboard")}
+            onClick={() => navigate("/ai-dashboard")}
           >
             <Box
               sx={{
@@ -114,7 +114,7 @@ const AppHeader = () => {
             }}
           >
             <NavLink
-              to="/dashboard"
+              to="/ai-dashboard"
               style={{
                 textDecoration: "none",
               }}
@@ -140,7 +140,7 @@ const AppHeader = () => {
                   }}
                 >
                   <DashboardOutlined fontSize="small" />
-                  Dashboard
+                 AI Dashboard
                 </Box>
               )}
             </NavLink>

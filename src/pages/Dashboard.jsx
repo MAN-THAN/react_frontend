@@ -1,5 +1,6 @@
+import DashboardCompo from "../components/DashboardCompo";
 const Dashboard = () => {
-    return (<>AI Dash</>)
+    return <DashboardCompo />;
 };
 
 export default Dashboard;

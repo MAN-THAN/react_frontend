@@ -1,0 +1,7 @@
+import { axiosInstance } from "../axios/axiosInstance";
+
+
+export const getTasksSummary = async () => {
+    const res = await axiosInstance.get(`/dashboard`);
+    return res.data;
+}

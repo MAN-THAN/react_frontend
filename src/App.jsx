@@ -26,7 +26,7 @@ function App() {
             </ProtectedRoute>
           }
         >
-          <Route path="/dashboard" element={<Dashboard />} />
+          <Route path="/ai-dashboard" element={<Dashboard />} />
           <Route path="/my-tasks" element={<Tasks />} />
           <Route path="/profile" element={<Profile />} />
         </Route>

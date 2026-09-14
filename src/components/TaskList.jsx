@@ -1,4 +1,4 @@
-import { Box, Button, Card, CardContent, Container, Divider, FormControl, IconButton, InputAdornment, InputLabel, Menu, MenuItem, Select, Stack, TextField, Typography } from "@mui/material";
+import { Box, Button, Card, CardContent, Chip, Container, Divider, FormControl, IconButton, InputAdornment, InputLabel, Menu, MenuItem, Select, Stack, TextField, Typography } from "@mui/material";
 
 import { Add, AssignmentOutlined, CalendarTodayOutlined, EditOutlined, FilterListOutlined, MoreVert, Search, SortOutlined } from "@mui/icons-material";
 
@@ -10,8 +10,8 @@ import TaskModal from "../modal/TaskModal";
 import DeleteTaskDialog from "../modal/DeleteTaskDialog";
 
 const TaskList = () => {
-
   const [taskList, setTaskList] = useState([]);
+
   // =====================================================
   // SEARCH / FILTER / SORT
   // =====================================================
@@ -95,8 +95,7 @@ const TaskList = () => {
         });
 
         setPage(pageNumber);
-        // Fallback: if exactly 10 came back,
-        // assume another page may exist.
+
         setHasMore(res.has_more ?? incomingTasks.length === 10);
       } catch (err) {
         console.error(err);
@@ -105,7 +104,7 @@ const TaskList = () => {
         setLoading(false);
       }
     },
-    [search, statusFilter, sortOrder, hasMore]
+    [search, statusFilter, sortOrder, hasMore],
   );
 
   // =====================================================
@@ -163,20 +162,16 @@ const TaskList = () => {
         },
         {
           root: null,
-
-          // Start loading before user reaches
-          // the actual bottom of the page.
           rootMargin: "300px",
-
           threshold: 0,
-        }
+        },
       );
 
       if (node) {
         observerRef.current.observe(node);
       }
     },
-    [page, hasMore, loadTasks]
+    [page, hasMore, loadTasks],
   );
 
   // =====================================================
@@ -251,8 +246,6 @@ const TaskList = () => {
 
       setTaskModalOpen(false);
 
-      // Reload from page 1 because the dataset
-      // may have changed.
       setPage(1);
       setHasMore(true);
 
@@ -318,6 +311,81 @@ const TaskList = () => {
     }
   };
 
+  // =====================================================
+  // HELPERS
+  // =====================================================
+
+  const getPriorityColor = (priority) => {
+    switch (priority) {
+      case "urgent":
+        return {
+          background: "#fff0f0",
+          color: "#d32f2f",
+          border: "#ffcdd2",
+        };
+
+      case "high":
+        return {
+          background: "#fff7e6",
+          color: "#ed6c02",
+          border: "#ffe0b2",
+        };
+
+      case "medium":
+        return {
+          background: "#f3f1ff",
+          color: "#635bff",
+          border: "#ddd8ff",
+        };
+
+      case "low":
+        return {
+          background: "#f4f6f8",
+          color: "#667085",
+          border: "#e4e7ec",
+        };
+
+      default:
+        return {
+          background: "#f4f6f8",
+          color: "#667085",
+          border: "#e4e7ec",
+        };
+    }
+  };
+
+  const formatDueDate = (dueDate) => {
+    if (!dueDate) {
+      return null;
+    }
+
+    const date = new Date(dueDate);
+
+    if (Number.isNaN(date.getTime())) {
+      return null;
+    }
+
+    return date.toLocaleString("en-IN", {
+      day: "2-digit",
+      month: "short",
+      year: "numeric",
+      hour: "2-digit",
+      minute: "2-digit",
+    });
+  };
+
+  const isOverdue = (task) => {
+    if (!task.due_date || task.is_completed) {
+      return false;
+    }
+
+    return new Date(task.due_date) < new Date();
+  };
+
+  // =====================================================
+  // UI
+  // =====================================================
+
   return (
     <Box
       sx={{
@@ -345,7 +413,6 @@ const TaskList = () => {
               alignItems: "center",
             }}
           >
-            {/* LEFT */}
             <Stack spacing={0.7} sx={{ minWidth: 0 }}>
               <Stack direction="row" alignItems="center" spacing={1.5}>
                 <Box
@@ -364,24 +431,11 @@ const TaskList = () => {
                 >
                   <AssignmentOutlined />
                 </Box>
-
-                {/* <Typography
-                  variant="h4"
-                  sx={{
-                    fontWeight: 700,
-                    letterSpacing: "-0.6px",
-                  }}
-                >
-                  My Tasks
-                </Typography> */}
               </Stack>
-
-              {/* <Typography variant="body2" color="text.secondary">
-                Keep track of everything you need to get done.
-              </Typography> */}
             </Stack>
 
             {/* RIGHT CONTROLS */}
+
             <Stack
               direction={{
                 xs: "column",
@@ -395,6 +449,7 @@ const TaskList = () => {
               justifyContent="flex-end"
             >
               {/* SEARCH */}
+
               <TextField
                 size="small"
                 placeholder="Search tasks..."
@@ -427,6 +482,7 @@ const TaskList = () => {
               />
 
               {/* STATUS FILTER */}
+
               <FormControl
                 size="small"
                 sx={{
@@ -441,9 +497,7 @@ const TaskList = () => {
                 <Select
                   value={statusFilter}
                   label="Status"
-                  onChange={(e) => {
-                    setStatusFilter(e.target.value);
-                  }}
+                  onChange={(e) => setStatusFilter(e.target.value)}
                   startAdornment={
                     <FilterListOutlined
                       sx={{
@@ -467,6 +521,7 @@ const TaskList = () => {
               </FormControl>
 
               {/* SORT */}
+
               <FormControl
                 size="small"
                 sx={{
@@ -481,9 +536,7 @@ const TaskList = () => {
                 <Select
                   value={sortOrder}
                   label="Sort by"
-                  onChange={(e) => {
-                    setSortOrder(e.target.value);
-                  }}
+                  onChange={(e) => setSortOrder(e.target.value)}
                   startAdornment={
                     <SortOutlined
                       sx={{
@@ -501,10 +554,15 @@ const TaskList = () => {
                   <MenuItem value="newest">Newest first</MenuItem>
 
                   <MenuItem value="oldest">Oldest first</MenuItem>
+
+                  <MenuItem value="due_soon">Due soon</MenuItem>
+
+                  <MenuItem value="priority">Priority</MenuItem>
                 </Select>
               </FormControl>
 
               {/* ADD TASK */}
+
               <Button
                 variant="contained"
                 startIcon={<Add />}
@@ -552,7 +610,7 @@ const TaskList = () => {
               <Stack direction="row" justifyContent="space-between" alignItems="center">
                 <Stack spacing={0.5}>
                   <Typography variant="body2" color="text.secondary">
-                    Total Tasks 
+                    Tasks Loaded
                   </Typography>
 
                   <Typography variant="h5" fontWeight={700}>
@@ -575,10 +633,6 @@ const TaskList = () => {
             <Typography variant="h6" fontWeight={700}>
               Your tasks
             </Typography>
-{/* 
-            <Typography variant="body2" color="text.secondary">
-              Search, filter, and manage your tasks.
-            </Typography> */}
           </Stack>
 
           {/* ==================================================
@@ -617,11 +671,11 @@ const TaskList = () => {
                       onClick={() => {
                         setSearchInput("");
                         setStatusFilter("all");
+                        setSortOrder("newest");
                       }}
                       sx={{
                         mt: 1,
                         borderRadius: "10px",
-                        textTransform: "none",
                         borderColor: "#635bff",
                         color: "#635bff",
                       }}
@@ -634,6 +688,10 @@ const TaskList = () => {
             ) : (
               taskList.map((task, index) => {
                 const isLastTask = index === taskList.length - 1;
+
+                const priorityStyle = getPriorityColor(task.priority);
+
+                const dueDate = formatDueDate(task.due_date);
 
                 return (
                   <Card
@@ -655,6 +713,7 @@ const TaskList = () => {
                     <CardContent sx={{ p: 3 }}>
                       <Stack spacing={2}>
                         {/* TASK HEADER */}
+
                         <Stack direction="row" justifyContent="space-between" alignItems="flex-start" spacing={2}>
                           <Stack
                             direction="row"
@@ -682,7 +741,7 @@ const TaskList = () => {
                             </Box>
 
                             <Stack
-                              spacing={0.5}
+                              spacing={0.8}
                               sx={{
                                 minWidth: 0,
                                 flex: 1,
@@ -693,25 +752,97 @@ const TaskList = () => {
                                 fontWeight={650}
                                 sx={{
                                   overflowWrap: "anywhere",
+                                  textDecoration: task.is_completed ? "line-through" : "none",
+                                  opacity: task.is_completed ? 0.7 : 1,
                                 }}
                               >
                                 {task.title}
                               </Typography>
 
-                              <Typography
-                                variant="body2"
-                                color="text.secondary"
-                                sx={{
-                                  lineHeight: 1.6,
-                                  overflowWrap: "anywhere",
-                                }}
-                              >
-                                {task.description}
-                              </Typography>
+                              {task.description && (
+                                <Typography
+                                  variant="body2"
+                                  color="text.secondary"
+                                  sx={{
+                                    lineHeight: 1.6,
+                                    overflowWrap: "anywhere",
+                                  }}
+                                >
+                                  {task.description}
+                                </Typography>
+                              )}
+
+                              {/* META INFORMATION */}
+
+                              <Stack direction="row" spacing={1} flexWrap="wrap" useFlexGap sx={{ mt: 0.5 }}>
+                                {/* PRIORITY */}
+
+                                {task.priority && (
+                                  <Chip
+                                    size="small"
+                                    label={task.priority.charAt(0).toUpperCase() + task.priority.slice(1)}
+                                    sx={{
+                                      backgroundColor: priorityStyle.background,
+                                      color: priorityStyle.color,
+                                      border: `1px solid ${priorityStyle.border}`,
+                                      fontWeight: 600,
+                                      fontSize: "0.72rem",
+                                    }}
+                                  />
+                                )}
+
+                                {/* CATEGORY */}
+
+                                {task.category && (
+                                  <Chip
+                                    size="small"
+                                    label={task.category}
+                                    variant="outlined"
+                                    sx={{
+                                      borderRadius: "8px",
+                                      fontSize: "0.72rem",
+                                    }}
+                                  />
+                                )}
+
+                                {/* ESTIMATED TIME */}
+
+                                {task.estimated_minutes && (
+                                  <Chip
+                                    size="small"
+                                    label={`${task.estimated_minutes} min`}
+                                    variant="outlined"
+                                    sx={{
+                                      borderRadius: "8px",
+                                      fontSize: "0.72rem",
+                                    }}
+                                  />
+                                )}
+                              </Stack>
+
+                              {/* TAGS */}
+
+                              {task.tags?.length > 0 && (
+                                <Stack direction="row" spacing={0.6} flexWrap="wrap" useFlexGap>
+                                  {task.tags.map((tag) => (
+                                    <Chip
+                                      key={tag}
+                                      size="small"
+                                      label={`#${tag}`}
+                                      sx={{
+                                        height: 24,
+                                        fontSize: "0.7rem",
+                                        backgroundColor: "#f7f7fb",
+                                      }}
+                                    />
+                                  ))}
+                                </Stack>
+                              )}
                             </Stack>
                           </Stack>
 
                           {/* THREE DOTS */}
+
                           <IconButton
                             size="small"
                             onClick={(event) => handleMenuOpen(event, task)}
@@ -734,47 +865,81 @@ const TaskList = () => {
                         <Divider />
 
                         {/* FOOTER */}
+
                         <Stack
-                          direction="row"
+                          direction={{
+                            xs: "column",
+                            sm: "row",
+                          }}
                           justifyContent="space-between"
-                          alignItems="center"
+                          alignItems={{
+                            xs: "stretch",
+                            sm: "center",
+                          }}
                           sx={{
                             width: "100%",
                             gap: 2,
                           }}
                         >
+                          {/* DATE INFORMATION */}
+
                           <Stack
-                            direction="row"
-                            alignItems="center"
-                            spacing={0.8}
+                            spacing={0.7}
                             sx={{
                               minWidth: 0,
                             }}
                           >
-                            <CalendarTodayOutlined
-                              sx={{
-                                fontSize: 16,
-                                color: "text.secondary",
-                                flexShrink: 0,
-                              }}
-                            />
+                            <Stack direction="row" alignItems="center" spacing={0.8}>
+                              <CalendarTodayOutlined
+                                sx={{
+                                  fontSize: 16,
+                                  color: "text.secondary",
+                                  flexShrink: 0,
+                                }}
+                              />
 
-                            <Typography
-                              variant="caption"
-                              color="text.secondary"
-                              sx={{
-                                whiteSpace: "nowrap",
-                              }}
-                            >
-                              {new Date(task.created_at).toLocaleString("en-IN", {
-                                day: "2-digit",
-                                month: "short",
-                                year: "numeric",
-                              })}
-                            </Typography>
+                              <Typography variant="caption" color="text.secondary">
+                                Created{" "}
+                                {new Date(task.created_at).toLocaleDateString("en-IN", {
+                                  day: "2-digit",
+                                  month: "short",
+                                  year: "numeric",
+                                })}
+                              </Typography>
+                            </Stack>
+
+                            {/* DUE DATE */}
+
+                            {dueDate && (
+                              <Typography
+                                variant="caption"
+                                sx={{
+                                  color: isOverdue(task) ? "#d32f2f" : "text.secondary",
+                                  fontWeight: isOverdue(task) ? 600 : 400,
+                                }}
+                              >
+                                {isOverdue(task) ? "Overdue: " : "Due: "}
+                                {dueDate}
+                              </Typography>
+                            )}
+
+                            {/* COMPLETED DATE */}
+
+                            {task.completed_at && (
+                              <Typography variant="caption" color="text.secondary">
+                                Completed{" "}
+                                {new Date(task.completed_at).toLocaleDateString("en-IN", {
+                                  day: "2-digit",
+                                  month: "short",
+                                  year: "numeric",
+                                })}
+                              </Typography>
+                            )}
                           </Stack>
 
-                          {task?.is_completed ? (
+                          {/* STATUS BUTTON */}
+
+                          {task.is_completed ? (
                             <Button
                               size="small"
                               onClick={() => handleTaskStatus(task.id)}
@@ -827,9 +992,7 @@ const TaskList = () => {
               })
             )}
 
-            {/* ==================================================
-                LOADING INDICATOR
-            ================================================== */}
+            {/* LOADING INDICATOR */}
 
             {loading && (
               <Box
@@ -845,9 +1008,7 @@ const TaskList = () => {
               </Box>
             )}
 
-            {/* ==================================================
-                END OF LIST
-            ================================================== */}
+            {/* END OF LIST */}
 
             {!hasMore && taskList.length > 0 && (
               <Box
