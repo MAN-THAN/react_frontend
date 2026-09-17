@@ -8,6 +8,7 @@ import Profile from "./pages/Profile";
 import { ProtectedRoute } from "./components/ProtectedRoute";
 import AppLayout from "./layouts/AppLayout";
 import { GuestRoute } from "./components/GuestRoute";
+import AITaskAssistant from "./pages/AiTaskAssistant";
 import './App.css';
 
 function App() {
@@ -29,6 +30,8 @@ function App() {
           <Route path="/ai-dashboard" element={<Dashboard />} />
           <Route path="/my-tasks" element={<Tasks />} />
           <Route path="/profile" element={<Profile />} />
+          <Route path="/ai-task-assistant" element={<AITaskAssistant />} />
+
         </Route>
 
         {/* Default route */}

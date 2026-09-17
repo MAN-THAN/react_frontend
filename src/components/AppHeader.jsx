@@ -1,14 +1,14 @@
 import { useContext, useState } from "react";
-import { AppBar, Avatar, Box, Container, IconButton, Menu, MenuItem, Stack, Toolbar, Typography } from "@mui/material";
+import { AppBar, Avatar, Box, Container, IconButton, Menu, MenuItem, Stack, Toolbar, Tooltip, Typography } from "@mui/material";
 
-import { DashboardOutlined, LogoutOutlined, TaskAltOutlined } from "@mui/icons-material";
+import { AutoAwesomeRounded, DashboardOutlined, LogoutOutlined, SmartToyRounded, TaskAltOutlined } from "@mui/icons-material";
 
 import { NavLink, useNavigate } from "react-router-dom";
 import { AuthContext } from "../context/authContext";
 import { logout as user_logout } from "../services/authService";
 
 const AppHeader = () => {
-  const { logout } = useContext(AuthContext);
+  const { logout, userName } = useContext(AuthContext);
 
   const navigate = useNavigate();
 
@@ -26,13 +26,13 @@ const AppHeader = () => {
 
   const handleLogout = async () => {
     handleProfileClose();
+
     try {
       await user_logout();
       logout();
-    //   navigate("/login", { replace: true });
     } catch (err) {
       console.error(err);
-      alert("something went wrong");
+      alert("Something went wrong");
     }
   };
 
@@ -41,10 +41,13 @@ const AppHeader = () => {
       position="sticky"
       elevation={0}
       sx={{
-        backgroundColor: "rgba(255,255,255,0.88)",
-        backdropFilter: "blur(14px)",
-        borderBottom: "1px solid rgba(0,0,0,0.07)",
-        color: "#1f1f2e",
+        top: 0,
+        zIndex: (theme) => theme.zIndex.appBar,
+        background: "linear-gradient(180deg, rgba(255,255,255,0.96) 0%, rgba(250,249,255,0.92) 100%)",
+        backdropFilter: "blur(18px)",
+        WebkitBackdropFilter: "blur(18px)",
+        borderBottom: "1px solid rgba(99,91,255,0.08)",
+        color: "#202035",
       }}
     >
       <Container maxWidth="lg">
@@ -57,51 +60,80 @@ const AppHeader = () => {
               xs: "1fr auto",
               sm: "auto 1fr auto",
             },
-            columnGap: 4,
+            columnGap: {
+              xs: 1,
+              sm: 4,
+            },
           }}
         >
-          {/* BRAND */}
+          {/* ================= BRAND ================= */}
+
           <Stack
             direction="row"
             alignItems="center"
             spacing={1.2}
             sx={{
               cursor: "pointer",
+              userSelect: "none",
             }}
             onClick={() => navigate("/ai-dashboard")}
           >
             <Box
               sx={{
-                width: 38,
-                height: 38,
-                borderRadius: "12px",
+                position: "relative",
+                width: 40,
+                height: 40,
+                borderRadius: "13px",
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "center",
                 background: "linear-gradient(135deg, #635bff 0%, #8b5cf6 100%)",
                 color: "#fff",
-                boxShadow: "0 7px 18px rgba(99,91,255,0.2)",
+                boxShadow: "0 8px 20px rgba(99,91,255,0.22)",
+                overflow: "hidden",
+
+                "&::after": {
+                  content: '""',
+                  position: "absolute",
+                  width: 55,
+                  height: 55,
+                  borderRadius: "50%",
+                  background: "rgba(255,255,255,0.14)",
+                  top: -28,
+                  right: -20,
+                },
               }}
             >
-              <TaskAltOutlined fontSize="small" />
+              <TaskAltOutlined
+                sx={{
+                  position: "relative",
+                  zIndex: 1,
+                  fontSize: 22,
+                }}
+              />
             </Box>
 
-            <Typography
-              variant="h6"
+            <Box><Typography
               sx={{
-                fontWeight: 750,
-                letterSpacing: "-0.3px",
+                fontWeight: 800,
+                letterSpacing: "-0.45px",
+                fontSize: 18,
                 display: {
                   xs: "none",
                   sm: "block",
                 },
+                paddingTop: "6px",
+                background: "linear-gradient(135deg, #28243e, #635bff)",
+                WebkitBackgroundClip: "text",
+                WebkitTextFillColor: "transparent",
               }}
             >
-              TaskFlow
-            </Typography>
+              AI Task Manager
+            </Typography></Box>
           </Stack>
 
-          {/* NAVIGATION */}
+          {/* ================= NAVIGATION ================= */}
+
           <Stack
             direction="row"
             spacing={0.5}
@@ -125,13 +157,13 @@ const AppHeader = () => {
                     display: "flex",
                     alignItems: "center",
                     gap: 0.8,
-                    px: 1.8,
+                    px: 1.7,
                     py: 1,
-                    borderRadius: "10px",
-                    color: isActive ? "#635bff" : "#686878",
+                    borderRadius: "11px",
+                    color: isActive ? "#635bff" : "#6c6a7a",
                     backgroundColor: isActive ? "#f0edff" : "transparent",
-                    fontSize: "0.9rem",
-                    fontWeight: isActive ? 600 : 500,
+                    fontSize: "0.88rem",
+                    fontWeight: isActive ? 700 : 500,
                     transition: "all 0.2s ease",
                     "&:hover": {
                       backgroundColor: "#f5f3ff",
@@ -139,8 +171,8 @@ const AppHeader = () => {
                     },
                   }}
                 >
-                  <DashboardOutlined fontSize="small" />
-                 AI Dashboard
+                  <DashboardOutlined sx={{ fontSize: 18 }} />
+                  AI Dashboard
                 </Box>
               )}
             </NavLink>
@@ -157,13 +189,13 @@ const AppHeader = () => {
                     display: "flex",
                     alignItems: "center",
                     gap: 0.8,
-                    px: 1.8,
+                    px: 1.7,
                     py: 1,
-                    borderRadius: "10px",
-                    color: isActive ? "#635bff" : "#686878",
+                    borderRadius: "11px",
+                    color: isActive ? "#635bff" : "#6c6a7a",
                     backgroundColor: isActive ? "#f0edff" : "transparent",
-                    fontSize: "0.9rem",
-                    fontWeight: isActive ? 600 : 500,
+                    fontSize: "0.88rem",
+                    fontWeight: isActive ? 700 : 500,
                     transition: "all 0.2s ease",
                     "&:hover": {
                       backgroundColor: "#f5f3ff",
@@ -171,20 +203,74 @@ const AppHeader = () => {
                     },
                   }}
                 >
-                  <TaskAltOutlined fontSize="small" />
+                  <TaskAltOutlined sx={{ fontSize: 18 }} />
                   My Tasks
                 </Box>
               )}
             </NavLink>
           </Stack>
 
-          {/* PROFILE */}
-          <Box sx={{ justifySelf: "end" }}>
+          {/* ================= RIGHT ACTIONS ================= */}
+
+          <Stack direction="row" spacing={2} alignItems="center" justifyContent="flex-end">
+            {/* AI ASSISTANT */}
+
+            <Tooltip title="Open AI Assistant" placement="bottom" arrow>
+              <IconButton
+                onClick={() => navigate("/ai-task-assistant")}
+                sx={{
+                  position: "relative",
+                  top : '6px',
+                  width: 42,
+                  height: 42,
+                  borderRadius: "14px",
+                  color: "#635bff",
+                  background: "linear-gradient(135deg, #f1efff, #e9e5ff)",
+                  border: "1px solid rgba(99,91,255,0.12)",
+                  boxShadow: "0 5px 15px rgba(99,91,255,0.08)",
+                  transition: "all 0.2s ease",
+
+                  "&:hover": {
+                    background: "linear-gradient(135deg, #e9e5ff, #ddd7ff)",
+                    transform: "translateY(-2px)",
+                    boxShadow: "0 9px 22px rgba(99,91,255,0.18)",
+                  },
+
+                  "&:active": {
+                    transform: "translateY(0)",
+                  },
+
+                  // Small notification-like glow
+                  "&::before": {
+                    content: '""',
+                    position: "absolute",
+                    top: 4,
+                    right: 4,
+                    width: 7,
+                    height: 7,
+                    borderRadius: "50%",
+                    backgroundColor: "#8b5cf6",
+                    boxShadow: "0 0 0 3px rgba(139,92,246,0.10)",
+                  },
+                }}
+              >
+                <AutoAwesomeRounded
+                  sx={{
+                    fontSize: 25,
+                  }}
+                />
+              </IconButton>
+            </Tooltip>
+
+            {/* PROFILE */}
+
             <IconButton
               onClick={handleProfileClick}
               sx={{
-                p: 0.5,
+                p: 0.45,
                 borderRadius: "50%",
+                transition: "all 0.2s ease",
+
                 "&:hover": {
                   backgroundColor: "#f0edff",
                 },
@@ -195,14 +281,17 @@ const AppHeader = () => {
                   width: 42,
                   height: 42,
                   fontSize: "0.95rem",
-                  fontWeight: 700,
+                  fontWeight: 750,
                   background: "linear-gradient(135deg, #635bff 0%, #8b5cf6 100%)",
-                  boxShadow: "0 6px 18px rgba(99,91,255,0.22)",
+                  boxShadow: "0 7px 18px rgba(99,91,255,0.22)",
+                  border: "2px solid rgba(255,255,255,0.9)",
                 }}
               >
-                M
+                {userName ? userName.split(" ")[0].charAt(0).toUpperCase() + userName.split(" ")[1].charAt(0).toUpperCase() : "U"}
               </Avatar>
             </IconButton>
+
+            {/* PROFILE MENU */}
 
             <Menu
               anchorEl={profileAnchor}
@@ -218,13 +307,14 @@ const AppHeader = () => {
               }}
               slotProps={{
                 paper: {
-                  elevation: 3,
+                  elevation: 0,
                   sx: {
-                    mt: 1,
-                    minWidth: 190,
-                    borderRadius: "14px",
-                    border: "1px solid rgba(0,0,0,0.06)",
-                    boxShadow: "0 16px 40px rgba(31,38,135,0.12)",
+                    mt: 1.2,
+                    minWidth: 195,
+                    borderRadius: "16px",
+                    border: "1px solid rgba(99,91,255,0.09)",
+                    backgroundColor: "#fff",
+                    boxShadow: "0 18px 45px rgba(38,33,90,0.13)",
                     overflow: "hidden",
                   },
                 },
@@ -237,19 +327,23 @@ const AppHeader = () => {
                 }}
                 sx={{
                   gap: 1.5,
-                  py: 1.3,
+                  py: 1.35,
+                  px: 2,
                   fontSize: "0.9rem",
+                  fontWeight: 500,
+                  color: "#454158",
                   "&:hover": {
-                    backgroundColor: "#f3f1ff",
+                    backgroundColor: "#f5f3ff",
+                    color: "#635bff",
                   },
                 }}
               >
-                {/* <PersonOutline
-                  fontSize="small"
+                <SmartToyRounded
                   sx={{
+                    fontSize: 18,
                     color: "#635bff",
                   }}
-                /> */}
+                />
                 My Profile
               </MenuItem>
 
@@ -257,19 +351,21 @@ const AppHeader = () => {
                 onClick={handleLogout}
                 sx={{
                   gap: 1.5,
-                  py: 1.3,
+                  py: 1.35,
+                  px: 2,
                   fontSize: "0.9rem",
+                  fontWeight: 500,
                   color: "#d32f2f",
                   "&:hover": {
                     backgroundColor: "#fff4f3",
                   },
                 }}
               >
-                <LogoutOutlined fontSize="small" />
+                <LogoutOutlined sx={{ fontSize: 18 }} />
                 Log out
               </MenuItem>
             </Menu>
-          </Box>
+          </Stack>
         </Toolbar>
       </Container>
     </AppBar>

@@ -25,14 +25,14 @@ import {
 
 import { AuthContext } from "../context/authContext";
 import { sleep } from "../utils/utils";
+import AiAssistantCard from "./AiAssistantCard";
 
 const Dashboard = () => {
   const [summary, setSummary] = useState(null);
 
   const [loading, setLoading] = useState(false);
 
-  const [analysisStarted, setAnalysisStarted] =
-    useState(false);
+  const [analysisStarted, setAnalysisStarted] = useState(false);
 
   const [error, setError] = useState("");
 
@@ -746,6 +746,7 @@ const Dashboard = () => {
             )}
 
         </Stack>
+        {(!loading) && <AiAssistantCard />}
       </Container>
     </Box>
   );
@@ -969,6 +970,7 @@ const LoadingText = () => {
         AI is preparing your summary...
       </Typography>
     </Stack>
+   
   );
 };
 

@@ -17,7 +17,7 @@ const Login = () => {
 
   const [error, setError] = useState("");
 
-  const { login: saveToken } = useAuth();
+  const { login: saveToken, setUserName } = useAuth();
   const navigate = useNavigator();
 
   const handleChange = (e) => {
@@ -43,6 +43,7 @@ const Login = () => {
       const data = await login(formData);
 
       saveToken(data.access_token);
+      setUserName(data.user_name);
 
       navigate("/my-tasks");
     } catch (err) {
