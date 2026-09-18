@@ -1,19 +1,14 @@
-import {
-  AutoAwesomeRounded,
-  CheckCircleRounded,
-  PsychologyRounded,
-} from "@mui/icons-material";
+import { AutoAwesomeRounded } from "@mui/icons-material";
 
 import { Box, Stack, Typography } from "@mui/material";
 
-const AgentActivity = () => {
+const AgentActivity = ({ activities, status }) => {
   return (
     <Box
       sx={{
         borderRadius: 3,
         border: "1px solid rgba(99, 91, 255, 0.10)",
-        background:
-          "linear-gradient(135deg, #faf9ff, #f5f3ff)",
+        background: "linear-gradient(135deg, #faf9ff, #f5f3ff)",
         px: 2,
         py: 1.8,
       }}
@@ -21,11 +16,7 @@ const AgentActivity = () => {
       <Stack spacing={1.5}>
         {/* Header */}
 
-        <Stack
-          direction="row"
-          spacing={1}
-          alignItems="center"
-        >
+        <Stack direction="row" spacing={1} alignItems="center">
           <AutoAwesomeRounded
             sx={{
               fontSize: 17,
@@ -46,65 +37,19 @@ const AgentActivity = () => {
 
         {/* Agent started */}
 
-        <ActivityStep
-          type="completed"
-          icon={<PsychologyRounded />}
-          title="Agent started"
-          subtitle="Understanding your request"
-        />
-
-        {/* Tool */}
-
-        <ActivityStep
-          type="completed"
-          icon={<CheckCircleRounded />}
-          title="Checking your tasks"
-          subtitle="Found 8 tasks"
-        />
-
-        {/* Tool */}
-
-        <ActivityStep
-          type="completed"
-          icon={<CheckCircleRounded />}
-          title="Checking overdue tasks"
-          subtitle="Found 2 overdue tasks"
-        />
-
-        {/* Current step */}
-
-        <ActivityStep
-          type="running"
-          title="Analyzing priorities..."
-        />
-
-        {/* Finished */}
-
-        <ActivityStep
-          type="completed"
-          icon={<CheckCircleRounded />}
-          title="Agent completed"
-          subtitle="Response ready"
-        />
+        {activities.map((activity) => (
+          <ActivityStep key={activity.id} {...activity} />
+        ))}
       </Stack>
     </Box>
   );
 };
 
-const ActivityStep = ({
-  type,
-  icon,
-  title,
-  subtitle,
-}) => {
+const ActivityStep = ({ type, icon, title, subtitle }) => {
   const isRunning = type === "running";
 
   return (
-    <Stack
-      direction="row"
-      spacing={1.2}
-      alignItems="flex-start"
-    >
+    <Stack direction="row" spacing={1.2} alignItems="flex-start">
       <Box
         sx={{
           width: 24,
@@ -115,9 +60,7 @@ const ActivityStep = ({
           display: "flex",
           alignItems: "center",
           justifyContent: "center",
-          backgroundColor: isRunning
-            ? "#ebe8ff"
-            : "#e9f8ef",
+          backgroundColor: isRunning ? "#ebe8ff" : "#e9f8ef",
         }}
       >
         {isRunning ? (
