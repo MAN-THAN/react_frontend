@@ -26,6 +26,7 @@ import {
 import { AuthContext } from "../context/authContext";
 import { sleep } from "../utils/utils";
 import AiAssistantCard from "./AiAssistantCard";
+import axiosInstance from "../axios/axiosInstance";
 
 const Dashboard = () => {
   const [summary, setSummary] = useState(null);
@@ -40,9 +41,8 @@ const Dashboard = () => {
 
   const { token } = useContext(AuthContext);
 
-  const API_BASE_URL =
-   import.meta.env.VITE_APP_URL ||
-    "http://127.0.0.1:8000";
+  const API_BASE_URL = axiosInstance.defaults.baseURL;
+  
 
   // =====================================================
   // SUMMARIZE TASKS

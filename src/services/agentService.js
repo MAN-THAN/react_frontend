@@ -1,4 +1,5 @@
-const API_BASE_URL = import.meta.env.VITE_APP_URL || "http://127.0.0.1:8000";
+import axiosInstance from "../axios/axiosInstance"
+const API_BASE_URL = axiosInstance.defaults.baseURL;
 
 /**
  * Streams agent events from the backend.
