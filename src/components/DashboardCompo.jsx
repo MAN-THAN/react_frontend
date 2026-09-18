@@ -26,7 +26,7 @@ import {
 import { AuthContext } from "../context/authContext";
 import { sleep } from "../utils/utils";
 import AiAssistantCard from "./AiAssistantCard";
-import axiosInstance from "../axios/axiosInstance";
+import { axiosInstance }from "../axios/axiosInstance";
 
 const Dashboard = () => {
   const [summary, setSummary] = useState(null);

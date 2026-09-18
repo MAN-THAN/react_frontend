@@ -1,4 +1,4 @@
-import axiosInstance from "../axios/axiosInstance"
+import { axiosInstance } from "../axios/axiosInstance"
 const API_BASE_URL = axiosInstance.defaults.baseURL;
 
 /**
